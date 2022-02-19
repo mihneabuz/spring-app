@@ -1,27 +1,29 @@
 package com.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UpdateUsernameRequest {
 
-    private String id;
     private String newUsername;
 
-    public UpdateUsernameRequest(String id, String newUsername) {
-        this.id = id;
-        this.newUsername = newUsername;
-    }
+    public UpdateUsernameRequest() {}
 
-    public String getId() {
-        return id;
+    public UpdateUsernameRequest(String newUsername) {
+        this.newUsername = newUsername;
     }
 
     public String getNewUsername() {
         return newUsername;
     }
 
+    public void setNewUsername(String newUsername) {
+        this.newUsername = newUsername;
+    }
+
     @Override
     public String toString() {
         return "UpdateUsernameRequest{" +
-            "id:\'" + id + "\'," +
             "newUsername:\'" + newUsername + "\'" +
             "}";
     }

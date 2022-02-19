@@ -1,15 +1,17 @@
 package com.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 public class LoginResponse extends Response {
 
-    private String id;
+    private String jwtToken;
 
-    public LoginResponse(String id) {
+    public LoginResponse(String jwtToken) {
         super(true, "ok");
-        this.id = id;
+        this.jwtToken = jwtToken;
     }
 
-    public String getId() {
-        return id;
+    public String getJwtToken() {
+        return jwtToken;
     }
 }
