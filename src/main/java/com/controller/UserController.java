@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
+@RequestMapping("/user")
 class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
@@ -69,6 +71,14 @@ class UserController {
             // This is very bad
             log.error("USER ID NOT FOUND IN DB!");
             throw new UnauthorizedException("User id not found");
+        }
+
+        if (maybeUser.get().getUsername().equals(body.getNewUsername())) {
+            return Response.bad("New username same as current");
+        }
+
+        if (userRepo.findByUsername(body.getNewUsername()).isPresent()) {
+            return Response.bad("Username already in use!");
         }
 
         userRepo.updateUsername(identity.getId(), body.getNewUsername());
