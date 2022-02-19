@@ -5,32 +5,20 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LoginRequest {
-
-    @JsonProperty(required = true)
-    private String username;
+public class DeleteUserRequest {
 
     @JsonProperty(required = true)
     private String password;
 
-    public LoginRequest() {}
+    public DeleteUserRequest() {}
 
     @JsonCreator
-    public LoginRequest(String username, String password) {
-        this.username = username;
+    public DeleteUserRequest(String password) {
         this.password = password;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public String getPassword() {
         return password;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public void setPassword(String password) {
@@ -39,8 +27,7 @@ public class LoginRequest {
 
     @Override
     public String toString() {
-        return "Login{" +
-            "username:\'" + username + "\'," +
+        return "DeleteUserRequest{" +
             "password:\'" + password + "\'" +
             "}";
     }

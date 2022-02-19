@@ -3,11 +3,13 @@ package com.controller;
 import com.model.*;
 import com.repository.UserRepository;
 import com.auth.JwtOps;
+import com.auth.exceptions.UnauthorizedException;
 import com.entity.Identity;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,46 +22,29 @@ class UserController {
     private static final UserRepository userRepo = UserRepository.get();
 
     @PostMapping("/register")
-    public Response register(@RequestBody RegisterRequest data) {
-        log.info(data.toString());
+    public Response register(@RequestBody RegisterRequest body) {
+        log.info(body.toString());
 
-        var alreadyExists = userRepo.findByUsername(data.getUsername()).isPresent();
+        var alreadyExists = userRepo.findByUsername(body.getUsername()).isPresent();
 
         if (alreadyExists) {
             return Response.bad("Username already in use!");
         } else {
-            userRepo.addUser(data.getUsername(), data.getPassword());
+            userRepo.addUser(body.getUsername(), body.getPassword());
             return Response.good();
-        }
-    }
-
-    @PostMapping("/updateUsername")
-    public Response updateUsername(@RequestHeader("Authorization") String auth,
-                                   @RequestBody UpdateUsernameRequest data) {
-        log.info(data.toString());
-        Identity identity = JwtOps.decodeOrThrow(auth);
-
-        var maybeUser = userRepo.findByID(identity.getId());
-
-        if (maybeUser.isPresent()) {
-            // NOTE: update db
-            return Response.good();
-        } else {
-            log.error("User id from JWT Token not found in DB!");
-            return Response.bad("Cannot perform update");
         }
     }
 
     @PostMapping("/login")
-    public Response login(@RequestBody LoginRequest data) {
-        log.info(data.toString());
+    public Response login(@RequestBody LoginRequest body) {
+        log.info(body.toString());
 
-        var maybeUser = userRepo.findByUsername(data.getUsername());
+        var maybeUser = userRepo.findByUsername(body.getUsername());
 
         if (maybeUser.isPresent()) {
             var user = maybeUser.get();
 
-            if (user.getPassword().equals(data.getPassword())) {
+            if (user.getPassword().equals(body.getPassword())) {
                 String token = JwtOps.createToken(user);
                 return new LoginResponse(token);
             } else {
@@ -68,6 +53,72 @@ class UserController {
 
         } else {
             return Response.bad("Wrong username!");
+        }
+    }
+
+    @PostMapping("/updateUsername")
+    public Response updateUsername(@RequestHeader("Authorization") String auth,
+                                   @RequestBody UpdateUsernameRequest body) {
+
+        log.info(body.toString());
+
+        Identity identity = JwtOps.decodeOrThrow(auth);
+        var maybeUser = userRepo.findByID(identity.getId());
+
+        if (!maybeUser.isPresent()) {
+            // This is very bad
+            log.error("USER ID NOT FOUND IN DB!");
+            throw new UnauthorizedException("User id not found");
+        }
+
+        userRepo.updateUsername(identity.getId(), body.getNewUsername());
+
+        return Response.good();
+    }
+
+    @PostMapping("/updatePassword")
+    public Response udpatePassword(@RequestHeader("Authorization") String auth,
+                                   @RequestBody UpdatePasswordRequest body) {
+
+        log.info(body.toString());
+
+        Identity identity = JwtOps.decodeOrThrow(auth);
+        var maybeUser = userRepo.findByID(identity.getId());
+
+        if (!maybeUser.isPresent()) {
+            // This is very bad
+            log.error("USER ID NOT FOUND IN DB!");
+            throw new UnauthorizedException("User id not found");
+        }
+
+        if (maybeUser.get().getPassword().equals(body.getOldPassword())) {
+            userRepo.updatePassword(identity.getId(), body.getNewPassword()); 
+            return Response.good();
+        } else {
+            return Response.bad("Wrong password!"); 
+        }
+    }
+
+    @DeleteMapping("/deleteUser")
+    public Response deleteUser(@RequestHeader("Authorization") String auth,
+                               @RequestBody DeleteUserRequest body) {
+        
+        log.info(body.toString());
+
+        Identity identity = JwtOps.decodeOrThrow(auth);
+        var maybeUser = userRepo.findByID(identity.getId());
+
+        if (!maybeUser.isPresent()) {
+            // This is very bad
+            log.error("USER ID NOT FOUND IN DB!");
+            throw new UnauthorizedException("User id not found");
+        }
+
+        if (maybeUser.get().getPassword().equals(body.getPassword())) {
+            userRepo.deleteUser(identity.getId()); 
+            return Response.good();
+        } else {
+            return Response.bad("Wrong password!"); 
         }
     }
 
