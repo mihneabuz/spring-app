@@ -1,7 +1,5 @@
 package com.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 public class LoginResponse extends Response {
 
     private String jwtToken;
