@@ -62,6 +62,12 @@ class UserController {
         }
     }
 
+    @GetMapping("/info")
+    public Response userInfo(@RequestHeader("Authorization") String auth) {
+        Identity identity = JwtOps.decodeOrThrow(auth);
+        return new UserInfoResponse(identity.getUsername(), identity.getLevel());
+    }
+
     @PostMapping("/updateUsername")
     public Response updateUsername(@RequestHeader("Authorization") String auth,
                                    @RequestBody UpdateUsernameRequest body) {
