@@ -36,7 +36,7 @@ class UserController {
         if (alreadyExists) {
             return Response.bad("Username already in use!");
         } else {
-            userRepo.addUser(body.getUsername(), body.getPassword());
+            userRepo.addUser(body.getEmail(), body.getUsername(), body.getPassword());
             return Response.good();
         }
     }

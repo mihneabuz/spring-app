@@ -8,6 +8,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class RegisterRequest {
 
     @JsonProperty(required = true)
+    private String email;
+
+    @JsonProperty(required = true)
     private String username;
 
     @JsonProperty(required = true)
@@ -16,9 +19,14 @@ public class RegisterRequest {
     public RegisterRequest() {}
 
     @JsonCreator
-    public RegisterRequest(String username, String password) {
+    public RegisterRequest(String email, String username, String password) {
+        this.email = email;
         this.username = username;
         this.password = password;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setUsername(String username) {
@@ -27,6 +35,10 @@ public class RegisterRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public String getUsername() {
@@ -40,6 +52,7 @@ public class RegisterRequest {
     @Override
     public String toString() {
         return "RegisterRequest{" +
+            "email:\'" + email + "\'," +
             "username:\'" + username + "\'," +
             "password:\'" + password + "\'" +
             "}";

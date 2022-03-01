@@ -11,12 +11,14 @@ public class User {
     @Id
     public String id;
 
+    public String email;
     public String username;
     public String password;
     public int level;
 
-    public User(String id, String username, String password, int level) {
+    public User(String id, String email, String username, String password, int level) {
         this.id = id;
+        this.email = email;
         this.username = username;
         this.password = password;
         this.level = level;
@@ -24,6 +26,10 @@ public class User {
 
     public String getId() {
         return id;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public String getUsername() {
@@ -42,6 +48,10 @@ public class User {
         this.id = id;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     } 
@@ -54,7 +64,7 @@ public class User {
         this.level = level;
     }
 
-    public static User createNew(String username, String password) {
-        return new User(UUID.randomUUID().toString(), username, password, 1);
+    public static User createNew(String email, String username, String password) {
+        return new User(UUID.randomUUID().toString(), email, username, password, 1);
     }
 }

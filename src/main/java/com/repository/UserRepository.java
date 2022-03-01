@@ -36,8 +36,8 @@ public class UserRepository  {
         return new Query().addCriteria(Criteria.where("id").is(id));
     }
 
-    public void addUser(String username, String password) {
-        User x = User.createNew(username, password);
+    public void addUser(String email, String username, String password) {
+        User x = User.createNew(email, username, password);
         mongoTemplate.insert(x);
     }
 
