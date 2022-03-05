@@ -31,6 +31,7 @@ class UserController {
     public Response register(@RequestBody RegisterRequest body) {
         log.info(body.toString());
 
+        // TODO: check if email is already used
         var alreadyExists = userRepo.findByUsername(body.getUsername()).isPresent();
 
         if (alreadyExists) {
