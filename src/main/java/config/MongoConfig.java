@@ -25,8 +25,4 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
         
         return MongoClients.create(mongoClientSettings);
     }
-
-    public String getUserCollection() {
-        return "users";
-    }
 }
