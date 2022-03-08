@@ -31,15 +31,13 @@ class UserController {
     public Response register(@RequestBody RegisterRequest body) {
         log.info(body.toString());
 
-        // TODO: check if email is already used
-        var alreadyExists = userRepo.findByUsername(body.getUsername()).isPresent();
-
-        if (alreadyExists) {
+        // NOTE: check if email is already used
+        var usernameExists = userRepo.findByUsername(body.getUsername()).isPresent();
+        if (usernameExists)
             return Response.bad("Username already in use!");
-        } else {
-            userRepo.addUser(body.getEmail(), body.getUsername(), body.getPassword());
-            return Response.good();
-        }
+
+        userRepo.addUser(body.getEmail(), body.getUsername(), body.getPassword());
+        return Response.good();
     }
 
     @PostMapping("/login")
@@ -47,20 +45,15 @@ class UserController {
         log.info(body.toString());
 
         var maybeUser = userRepo.findByUsername(body.getUsername());
-
-        if (maybeUser.isPresent()) {
-            var user = maybeUser.get();
-
-            if (user.getPassword().equals(body.getPassword())) {
-                String token = JwtOps.createToken(user);
-                return new LoginResponse(token);
-            } else {
-                return Response.bad("Wrong password!");
-            }
-
-        } else {
+        if (!maybeUser.isPresent())
             return Response.bad("Wrong username!");
-        }
+
+        var user = maybeUser.get();
+        if (!user.getPassword().equals(body.getPassword()))
+            return Response.bad("Wrong password!");
+
+        String token = JwtOps.createToken(user);
+        return new LoginResponse(token);
     }
 
     @GetMapping("/info")
@@ -84,13 +77,11 @@ class UserController {
             throw new UnauthorizedException("User id not found");
         }
 
-        if (maybeUser.get().getUsername().equals(body.getNewUsername())) {
+        if (maybeUser.get().getUsername().equals(body.getNewUsername()))
             return Response.bad("New username same as current");
-        }
 
-        if (userRepo.findByUsername(body.getNewUsername()).isPresent()) {
+        if (userRepo.findByUsername(body.getNewUsername()).isPresent())
             return Response.bad("Username already in use!");
-        }
 
         userRepo.updateUsername(identity.getId(), body.getNewUsername());
 
@@ -109,15 +100,15 @@ class UserController {
         if (!maybeUser.isPresent()) {
             // This is very bad
             log.error("USER ID NOT FOUND IN DB!");
-            throw new UnauthorizedException("User id not found");
+            throw new UnauthorizedException("User id doesn't exist");
         }
 
-        if (maybeUser.get().getPassword().equals(body.getOldPassword())) {
-            userRepo.updatePassword(identity.getId(), body.getNewPassword()); 
-            return Response.good();
-        } else {
+        var user = maybeUser.get();
+        if (!user.getPassword().equals(body.getOldPassword()))
             return Response.bad("Wrong password!"); 
-        }
+
+        userRepo.updatePassword(identity.getId(), body.getNewPassword()); 
+        return Response.good();
     }
 
     @DeleteMapping("/deleteUser")
@@ -132,15 +123,15 @@ class UserController {
         if (!maybeUser.isPresent()) {
             // This is very bad
             log.error("USER ID NOT FOUND IN DB!");
-            throw new UnauthorizedException("User id not found");
+            throw new UnauthorizedException("User id doesn't exist");
         }
 
-        if (maybeUser.get().getPassword().equals(body.getPassword())) {
-            userRepo.deleteUser(identity.getId()); 
-            return Response.good();
-        } else {
+        var user = maybeUser.get();
+        if (!user.getPassword().equals(body.getPassword()))
             return Response.bad("Wrong password!"); 
-        }
+
+        userRepo.deleteUser(identity.getId()); 
+        return Response.good();
     }
 
     @GetMapping("/count")
