@@ -50,6 +50,15 @@ public class UserRepository  {
         return Optional.of(list.get(0));
     }
 
+    public Optional<User> findByEmail(String email) {
+        var list = mongoTemplate.find(new Query().addCriteria(Criteria.where("email").is(email)), User.class);
+
+        if (list.isEmpty())
+            return Optional.empty();
+
+        return Optional.of(list.get(0));
+    } 
+
     public Optional<User> findByUsername(String username) {
         var list = mongoTemplate.find(new Query().addCriteria(Criteria.where("username").is(username)), User.class);
 
@@ -58,6 +67,12 @@ public class UserRepository  {
 
         return Optional.of(list.get(0));
     } 
+
+    public void updateEmail(String id, String newEmail) {
+        mongoTemplate.findAndModify(queryID(id), 
+                                    new Update().set("email", newEmail),
+                                    User.class);
+    }
 
     public void updateUsername(String id, String newUsername) {
         mongoTemplate.findAndModify(queryID(id), 
