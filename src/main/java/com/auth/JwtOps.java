@@ -19,10 +19,10 @@ public class JwtOps {
 
     private static final Logger log = LoggerFactory.getLogger(JwtOps.class);
     private static Algorithm algorithm = Algorithm.HMAC256("secret");
-    private static long milliesInADay = 1000 * 60 * 60 * 24;
+    private static long millisInADay = 1000 * 60 * 60 * 24;
 
     private static Date afterDays(int days) {
-        return new Date(System.currentTimeMillis() + (days * milliesInADay));
+        return new Date(System.currentTimeMillis() + (days * millisInADay));
     }
 
     public static String createToken(User user) {
