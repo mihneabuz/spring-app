@@ -2,7 +2,7 @@ package com.model;
 
 public class LoginResponse extends Response {
 
-    private String jwtToken;
+    private final String jwtToken;
 
     public LoginResponse(String jwtToken) {
         super(true, "ok");

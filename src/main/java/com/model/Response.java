@@ -2,8 +2,8 @@ package com.model;
 
 public class Response {
 
-    private boolean success;
-    private String message;
+    private final boolean success;
+    private final String message;
 
     public Response(boolean success, String message) {
         this.success = success;
