@@ -2,8 +2,8 @@ package com.model;
 
 public class UserInfoResponse extends Response {
         
-    private String username;
-    private long level;
+    private final String username;
+    private final long level;
 
     public UserInfoResponse(String username, long level) {
         super(true, "ok");
