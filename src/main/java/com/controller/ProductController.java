@@ -4,8 +4,8 @@ import com.auth.JwtOps;
 import com.auth.exceptions.UnauthorizedException;
 import com.entity.Identity;
 import com.entity.Product;
-import com.model.CreateProductRequest;
-import com.model.GetProductsResponse;
+import com.model.product.CreateProductRequest;
+import com.model.product.GetProductsResponse;
 import com.model.Response;
 import com.repository.ProductRepository;
 import org.slf4j.Logger;
@@ -28,7 +28,7 @@ public class ProductController {
         Identity identity = JwtOps.decodeOrThrow(auth);
 
         if (identity.level <= 2) {
-            throw new UnauthorizedException("Bad");
+            throw new UnauthorizedException("Unauthorized");
         }
 
         Product product = Product.createNew(body.getName(), body.getPrice(), body.getDetails());
@@ -39,7 +39,7 @@ public class ProductController {
 
     @GetMapping("/info")
     public Response productInfo(@RequestHeader("Authorization") String auth) {
-
+        // Get products only if logged in
         JwtOps.decodeOrThrow(auth);
 
         return new GetProductsResponse(productRepo.getProducts());

@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
 public class JwtOps {
 
     private static final Logger log = LoggerFactory.getLogger(JwtOps.class);
-    private static Algorithm algorithm = Algorithm.HMAC256("secret");
-    private static long millisInADay = 1000 * 60 * 60 * 24;
+    private static final Algorithm algorithm = Algorithm.HMAC256("secret");
+    private static final long millisInADay = 1000 * 60 * 60 * 24;
 
     private static Date afterDays(int days) {
         return new Date(System.currentTimeMillis() + (days * millisInADay));

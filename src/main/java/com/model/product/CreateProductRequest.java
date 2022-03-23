@@ -1,4 +1,4 @@
-package com.model;
+package com.model.product;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

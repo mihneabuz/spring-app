@@ -1,6 +1,7 @@
-package com.model;
+package com.model.product;
 
 import com.entity.Product;
+import com.model.Response;
 
 import java.util.List;
 

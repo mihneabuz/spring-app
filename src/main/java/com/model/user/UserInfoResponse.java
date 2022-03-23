@@ -1,4 +1,6 @@
-package com.model;
+package com.model.user;
+
+import com.model.Response;
 
 public class UserInfoResponse extends Response {
         

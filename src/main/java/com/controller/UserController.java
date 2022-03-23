@@ -1,6 +1,7 @@
 package com.controller;
 
 import com.model.*;
+import com.model.user.*;
 import com.repository.UserRepository;
 import com.auth.JwtOps;
 import com.auth.exceptions.UnauthorizedException;
