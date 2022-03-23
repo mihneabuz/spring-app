@@ -71,4 +71,9 @@ public class ProductRepository {
                                     new Update().set("details", newDetails),
                                     Product.class);
     }
+
+    public void deleteProduct(String id) {
+        mongoTemplate.findAndRemove(queryId(id),
+                                    Product.class);
+    }
 }

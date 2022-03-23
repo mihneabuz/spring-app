@@ -5,6 +5,7 @@ import com.auth.exceptions.UnauthorizedException;
 import com.entity.Identity;
 import com.entity.Product;
 import com.model.product.CreateProductRequest;
+import com.model.product.DeleteProductRequest;
 import com.model.product.GetProductsResponse;
 import com.model.Response;
 import com.model.product.UpdateProductRequest;
@@ -69,6 +70,25 @@ public class ProductController {
         if (body.hasDetails()) {
             productRepo.updateDetails(body.getId(), body.getDetails());
         }
+
+        return Response.good();
+    }
+
+    @DeleteMapping("/delete")
+    public Response delete(@RequestHeader("Authorization") String auth,
+                           @RequestBody DeleteProductRequest body) {
+        Identity identity = JwtOps.decodeOrThrow(auth);
+        if (identity.getLevel() <= 2) {
+            throw new UnauthorizedException("Unauthorized");
+        }
+
+        var maybeProduct = productRepo.findById(body.getId());
+
+        if (maybeProduct.isEmpty()) {
+            return Response.bad("No product with this id found");
+        }
+
+        productRepo.deleteProduct(body.getId());
 
         return Response.good();
     }
