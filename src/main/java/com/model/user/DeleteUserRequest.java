@@ -3,7 +3,11 @@ package com.model.user;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+@Getter @Setter @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DeleteUserRequest {
 
@@ -15,20 +19,5 @@ public class DeleteUserRequest {
     @JsonCreator
     public DeleteUserRequest(String password) {
         this.password = password;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public String toString() {
-        return "DeleteUserRequest{" +
-            "password:\'" + password + "\'" +
-            "}";
     }
 }

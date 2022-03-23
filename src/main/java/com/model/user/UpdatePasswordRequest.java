@@ -3,7 +3,11 @@ package com.model.user;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
+@Getter @Setter @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UpdatePasswordRequest {
 
@@ -19,29 +23,5 @@ public class UpdatePasswordRequest {
     public UpdatePasswordRequest(String oldPassword, String newPassword) {
         this.oldPassword = oldPassword;
         this.newPassword = newPassword;
-    }
-
-    public String getOldPassword() {
-        return oldPassword;
-    }
-
-    public String getNewPassword() {
-        return newPassword;
-    }
-
-    public void setOldPassword(String oldPassword) {
-        this.oldPassword = oldPassword;
-    }
-
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
-    }
-
-    @Override
-    public String toString() {
-        return "UpdatePasswordRequest{" +
-            "oldPassword:\'" + oldPassword + "\'," +
-            "newPassword:\'" + newPassword + "\'" +
-            "}";
     }
 }

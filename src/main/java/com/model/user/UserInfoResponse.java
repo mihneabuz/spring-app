@@ -1,7 +1,9 @@
 package com.model.user;
 
 import com.model.Response;
+import lombok.Getter;
 
+@Getter
 public class UserInfoResponse extends Response {
         
     private final String username;
@@ -11,13 +13,5 @@ public class UserInfoResponse extends Response {
         super(true, "ok");
         this.username = username;
         this.level = level;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public long getLevel() {
-        return level;
     }
 }
