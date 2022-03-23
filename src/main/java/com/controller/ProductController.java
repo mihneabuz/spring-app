@@ -26,6 +26,7 @@ public class ProductController {
     @PostMapping("/create")
     public Response create(@RequestHeader("Authorization") String auth,
                            @RequestBody CreateProductRequest body) {
+        log.info(body.toString());
 
         Identity identity = JwtOps.decodeOrThrow(auth);
         if (identity.level <= 2) {
@@ -49,6 +50,7 @@ public class ProductController {
     @PostMapping("/update")
     public Response update(@RequestHeader("Authorization") String auth,
                            @RequestBody UpdateProductRequest body) {
+        log.info(body.toString());
 
         Identity identity = JwtOps.decodeOrThrow(auth);
         if (identity.getLevel() <= 2) {
@@ -77,6 +79,8 @@ public class ProductController {
     @DeleteMapping("/delete")
     public Response delete(@RequestHeader("Authorization") String auth,
                            @RequestBody DeleteProductRequest body) {
+        log.info(body.toString());
+
         Identity identity = JwtOps.decodeOrThrow(auth);
         if (identity.getLevel() <= 2) {
             throw new UnauthorizedException("Unauthorized");
@@ -91,5 +95,11 @@ public class ProductController {
         productRepo.deleteProduct(body.getId());
 
         return Response.good();
+    }
+
+    @GetMapping("/count")
+    public long count(@RequestHeader("Authorization") String auth) {
+        JwtOps.decodeOrThrow(auth);
+        return productRepo.count();
     }
 }

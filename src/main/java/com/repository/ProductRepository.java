@@ -76,4 +76,8 @@ public class ProductRepository {
         mongoTemplate.findAndRemove(queryId(id),
                                     Product.class);
     }
+
+    public long count() {
+        return mongoTemplate.estimatedCount(Product.class);
+    }
 }
