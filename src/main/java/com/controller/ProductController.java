@@ -32,7 +32,6 @@ public class ProductController {
         if (identity.getLevel() <= 2) {
             throw new UnauthorizedException("Unauthorized");
         }
-        System.out.println(body);
 
         Product product = Product.createNew(body.getName(), body.getPrice(), body.getDetails());
         productRepo.addProduct(product);
