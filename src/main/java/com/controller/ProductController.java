@@ -7,6 +7,7 @@ import com.entity.Product;
 import com.model.product.CreateProductRequest;
 import com.model.product.GetProductsResponse;
 import com.model.Response;
+import com.model.product.UpdateProductRequest;
 import com.repository.ProductRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,6 @@ public class ProductController {
                            @RequestBody CreateProductRequest body) {
 
         Identity identity = JwtOps.decodeOrThrow(auth);
-
         if (identity.level <= 2) {
             throw new UnauthorizedException("Unauthorized");
         }
@@ -43,5 +43,33 @@ public class ProductController {
         JwtOps.decodeOrThrow(auth);
 
         return new GetProductsResponse(productRepo.getProducts());
+    }
+
+    @PostMapping("/update")
+    public Response update(@RequestHeader("Authorization") String auth,
+                           @RequestBody UpdateProductRequest body) {
+
+        Identity identity = JwtOps.decodeOrThrow(auth);
+        if (identity.getLevel() <= 2) {
+            throw new UnauthorizedException("Unauthorized");
+        }
+
+        var maybeProduct = productRepo.findById(body.getId());
+
+        if (maybeProduct.isEmpty()) {
+            return Response.bad("No product with this id found");
+        }
+
+        if (body.hasName()) {
+            productRepo.updateName(body.getId(), body.getName());
+        }
+        if (body.hasPrice()) {
+            productRepo.updatePrice(body.getId(), body.getPrice());
+        }
+        if (body.hasDetails()) {
+            productRepo.updateDetails(body.getId(), body.getDetails());
+        }
+
+        return Response.good();
     }
 }
