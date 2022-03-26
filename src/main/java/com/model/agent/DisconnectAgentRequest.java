@@ -17,13 +17,9 @@ public class DisconnectAgentRequest {
     @JsonProperty(required = true)
     public String port;
 
-    @JsonProperty(required = true)
-    public String root;
-
     @JsonCreator
-    public DisconnectAgentRequest(String ip, String port, String root) {
+    public DisconnectAgentRequest(String ip, String port) {
         this.ip = ip;
         this.port = port;
-        this.root = root;
     }
 }

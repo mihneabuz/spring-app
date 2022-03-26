@@ -6,24 +6,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Getter @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DirectoryRequest {
 
     @JsonProperty(required = true)
-    private String id;
+    public String id;
 
     @JsonProperty(required = true)
-    private String path;
-
-    public DirectoryRequest() {}
+    public String path;
 
     @JsonCreator
     public DirectoryRequest(String id, String path) {
         this.id = id;
         this.path = path;
     }
-
 }
-

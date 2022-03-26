@@ -44,7 +44,8 @@ public class AgentController {
             return Response.bad("No such agent");
         }
 
-        agentRepo.updateStatus(maybeAgent.get().getId(), "disconnected");
+//        agentRepo.updateStatus(maybeAgent.get().getId(), "disconnected");
+        agentRepo.deleteAgent(maybeAgent.get().getId());
         return Response.good();
     }
 

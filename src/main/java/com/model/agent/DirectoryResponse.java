@@ -1,15 +1,17 @@
 package com.model.agent;
 
-import com.entity.MyFile;
 import com.model.Response;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-import java.util.List;
-
+@Getter @Setter @ToString
 public class DirectoryResponse extends Response {
 
-    List<MyFile> files;
-    public DirectoryResponse(List<MyFile> files) {
+    private String body;
+
+    public DirectoryResponse(String body) {
         super(true, "ok");
-        this.files = files;
+        this.body = body;
     }
 }
