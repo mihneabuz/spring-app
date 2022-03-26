@@ -3,6 +3,7 @@ package com.controller;
 import com.model.agent.AgentsResponse;
 import com.model.agent.DirectoryRequest;
 import com.model.agent.DirectoryResponse;
+import com.model.agent.DeleteRequest;
 import com.model.Response;
 import com.repository.AgentRepository;
 import org.slf4j.Logger;
@@ -68,6 +69,29 @@ public class FileController {
         String jsonInputString = "{\"path\": \"" + body.getPath() + "\"}";
         
         return new DirectoryResponse(getJSONResponse(url, jsonInputString));
+    }
+
+    @GetMapping("/delete")
+    public Response deletePath(@RequestBody DeleteRequest body) {
+
+        log.info(body.toString());
+
+        var maybeAgent = agentRepo.findById(body.getId());
+
+        if(maybeAgent.isEmpty()) {
+            return Response.bad("No such agent");
+        }
+
+        String ip = maybeAgent.get().getIp();
+        String port = maybeAgent.get().getPort();
+
+        String url = "http://" + ip + ":" + port + "/files/delete";
+        String jsonInputString = "{\"path\": \"" + body.getPath() + "\"}";
+
+        System.out.println(getJSONResponse(url, jsonInputString));
+
+        return new DirectoryResponse(getJSONResponse(url, jsonInputString));
+
     }
 }
 
