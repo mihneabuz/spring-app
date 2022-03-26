@@ -5,8 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
-@Getter @Setter
+@Getter @Setter @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ShowProcsRequest {
 
@@ -19,14 +20,14 @@ public class ShowProcsRequest {
     @JsonProperty(required = false)
     public String sortBy;
 
-    public boolean hasSortBy() {
-        return (sortBy != null);
-    }
-
     @JsonCreator
     public ShowProcsRequest(String id, int count, String sortBy) {
         this.id = id;
         this.count = count;
         this.sortBy = sortBy;
+    }
+
+    public boolean hasSortBy() {
+        return (sortBy != null);
     }
 }

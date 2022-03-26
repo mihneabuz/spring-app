@@ -9,7 +9,7 @@ import lombok.ToString;
 
 @Getter @Setter @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DeletePathRequest {
+public class DownloadFileRequest {
 
     @JsonProperty(required = true)
     public String id;
@@ -18,7 +18,7 @@ public class DeletePathRequest {
     public String path;
 
     @JsonCreator
-    public DeletePathRequest(String id, String path) {
+    public DownloadFileRequest(String id, String path) {
         this.id = id;
         this.path = path;
     }

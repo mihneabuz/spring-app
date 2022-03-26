@@ -139,9 +139,7 @@ public class FileController {
                 .put("pattern", body.getPattern())
                 .toString();
 
-        String response = getJSONResponse(url, jsonInputString);
-
-        return new SearchPathResponse(response);
+        return new SearchPathResponse(getJSONResponse(url, jsonInputString));
     }
 
     @PostMapping("/content")
@@ -161,9 +159,7 @@ public class FileController {
                 .put("path", body.getPath())
                 .toString();
 
-        String response = getJSONResponse(url, jsonInputString);
-
-        return new ShowContentResponse(response);
+        return new ShowContentResponse(getJSONResponse(url, jsonInputString));
     }
 
     @PostMapping("/procs")
@@ -188,9 +184,27 @@ public class FileController {
 
         String jsonInputString = jsonInput.toString();
 
-        String response = getJSONResponse(url, jsonInputString);
+        return new ShowProcsResponse(getJSONResponse(url, jsonInputString));
+    }
 
-        return new ShowProcsResponse(response);
+    @PostMapping("/download")
+    public Response downloadFile(@RequestBody DownloadFileRequest body) {
+        log.info(body.toString());
+
+        var maybeAgent = agentRepo.findById(body.getId());
+        if(maybeAgent.isEmpty()) {
+            return Response.bad("No such agent");
+        }
+
+        String ip = maybeAgent.get().getIp();
+        String port = maybeAgent.get().getPort();
+
+        String url = "http://" + ip + ":" + port + "/files" + "/download";
+        String jsonInputString = new JSONObject()
+                .put("path", body.getPath())
+                .toString();
+
+        return new DownloadFileResponse(getJSONResponse(url, jsonInputString));
     }
 }
 
