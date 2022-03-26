@@ -192,5 +192,29 @@ public class FileController {
 
         return new ShowProcsResponse(response);
     }
+
+    @PostMapping("/upload")
+    public Response uploadFile(@RequestBody UploadFileRequest body) {
+        log.info(body.toString());
+
+        var maybeAgent = agentRepo.findById(body.getId());
+        if(maybeAgent.isEmpty()) {
+            return Response.bad("No such agent");
+        }
+
+        String ip = maybeAgent.get().getIp();
+        String port = maybeAgent.get().getPort();
+
+        String url = "http://" + ip + ":" + port + "/files" + "/upload";
+        String jsonInputString = new JSONObject()
+                .put("path", body.getPath())
+                .put("base64file", body.getBase64File())
+                .toString();
+
+        String response = getJSONResponse(url, jsonInputString);
+        // TODO maybe check response
+
+        return Response.good();
+    }
 }
 
