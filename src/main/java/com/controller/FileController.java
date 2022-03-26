@@ -1,11 +1,13 @@
 package com.controller;
 
 import com.model.agent.AgentsResponse;
+import com.model.agent.ContentRequest;
 import com.model.agent.DirectoryRequest;
 import com.model.agent.DirectoryResponse;
 import com.model.agent.DeleteRequest;
 import com.model.Response;
 import com.model.agent.FileCreateRequest;
+import com.model.agent.ProcessRequest;
 import com.repository.AgentRepository;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -114,6 +116,58 @@ public class FileController {
         String jsonInputString = new JSONObject()
                 .put("path", body.getPath())
                 .toString();
+
+        String response = getJSONResponse(url, jsonInputString);
+        // TODO maybe check response
+
+        return Response.good();
+    }
+
+    @PostMapping("/content")
+    public Response deletePath(@RequestBody ContentRequest body) {
+        log.info(body.toString());
+
+        var maybeAgent = agentRepo.findById(body.getId());
+        if(maybeAgent.isEmpty()) {
+            return Response.bad("No such agent");
+        }
+
+        String ip = maybeAgent.get().getIp();
+        String port = maybeAgent.get().getPort();
+
+        String url = "http://" + ip + ":" + port + "/files" + "/content";
+        String jsonInputString = new JSONObject()
+                .put("path", body.getPath())
+                .toString();
+
+        String response = getJSONResponse(url, jsonInputString);
+        // TODO maybe check response
+
+        return Response.good();
+    }
+
+    @PostMapping("/procs")
+    public Response deletePath(@RequestBody ProcessRequest body) {
+        log.info(body.toString());
+
+        var maybeAgent = agentRepo.findById(body.getId());
+        if(maybeAgent.isEmpty()) {
+            return Response.bad("No such agent");
+        }
+
+        String ip = maybeAgent.get().getIp();
+        String port = maybeAgent.get().getPort();
+
+        String url = "http://" + ip + ":" + port + "/files" + "/procs";
+
+        JSONObject jsonInput = new JSONObject()
+                .put("count", body.getCount());
+
+        if(body.hasSortBy()) {
+            jsonInput.put("sortBy", body.getSortBy()).toString();
+        }
+
+        String jsonInputString = jsonInput.toString();
 
         String response = getJSONResponse(url, jsonInputString);
         // TODO maybe check response
