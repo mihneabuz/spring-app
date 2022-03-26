@@ -1,11 +1,7 @@
 package com.controller;
 
-import com.model.agent.AgentsResponse;
-import com.model.agent.DirectoryRequest;
-import com.model.agent.DirectoryResponse;
-import com.model.agent.DeleteRequest;
+import com.model.agent.*;
 import com.model.Response;
-import com.model.agent.FileCreateRequest;
 import com.repository.AgentRepository;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -86,13 +82,16 @@ public class FileController {
         String port = maybeAgent.get().getPort();
 
         String url = "http://" + ip + ":" + port + "/files" + "/create";
-        String jsonInput = new JSONObject()
+        JSONObject jsonInput = new JSONObject()
                 .put("path", body.getPath())
-                .put("type", body.getType())
-                .put("content", body.getContent())
-                .toString();
+                .put("type", body.getType());
 
-        String response = getJSONResponse(url, jsonInput);
+        if (body.hasContent()) {
+            jsonInput.put("content", body.getContent());
+        }
+        String jsonInputString = jsonInput.toString();
+
+        String response = getJSONResponse(url, jsonInputString);
         // TODO maybe check response
 
         return Response.good();
@@ -119,6 +118,28 @@ public class FileController {
         // TODO maybe check response
 
         return Response.good();
+    }
+
+    @PostMapping("/search")
+    public Response searchPath(@RequestBody SearchRequest body) {
+        log.info(body.toString());
+
+        var maybeAgent = agentRepo.findById(body.getId());
+        if(maybeAgent.isEmpty()) {
+            return Response.bad("No such agent");
+        }
+
+        String ip = maybeAgent.get().getIp();
+        String port = maybeAgent.get().getPort();
+
+        String url = "http://" + ip + ":" + port + "/files" + "/search";
+        String jsonInputString = new JSONObject()
+                .put("pattern", body.getPattern())
+                .toString();
+
+        String response = getJSONResponse(url, jsonInputString);
+
+        return new SearchResponse(response);
     }
 }
 

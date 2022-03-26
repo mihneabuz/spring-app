@@ -8,29 +8,17 @@ import lombok.Setter;
 
 @Getter @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FileCreateRequest {
+public class SearchRequest {
 
     @JsonProperty(required = true)
     public String id;
 
     @JsonProperty(required = true)
-    public String path;
-
-    @JsonProperty(required = true)
-    public String type;
-
-    @JsonProperty(required = false)
-    public String content;
+    public String pattern;
 
     @JsonCreator
-    public FileCreateRequest(String id, String path, String type, String content) {
+    public SearchRequest(String id, String pattern) {
         this.id = id;
-        this.path = path;
-        this.type = type;
-        this.content = content;
-    }
-
-    public boolean hasContent() {
-        return content != null;
+        this.pattern = pattern;
     }
 }
