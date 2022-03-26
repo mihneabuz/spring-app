@@ -4,7 +4,9 @@ import com.model.agent.AgentsResponse;
 import com.model.agent.DirectoryRequest;
 import com.model.agent.DirectoryResponse;
 import com.model.Response;
+import com.model.agent.FileCreateRequest;
 import com.repository.AgentRepository;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -50,13 +52,11 @@ public class FileController {
         return new AgentsResponse(agentRepo.getAgents());
     }
 
-    @GetMapping("/dir")
+    @PostMapping("/dir")
     public Response showDirectory(@RequestBody DirectoryRequest body) {
-
         log.info(body.toString());
 
         var maybeAgent = agentRepo.findById(body.getId());
-
         if(maybeAgent.isEmpty()) {
             return Response.bad("No such agent");
         }
@@ -65,9 +65,36 @@ public class FileController {
         String port = maybeAgent.get().getPort();
 
         String url = "http://" + ip + ":" + port + "/files";
-        String jsonInputString = "{\"path\": \"" + body.getPath() + "\"}";
-        
+        String jsonInputString = new JSONObject()
+                .put("path", body.getPath())
+                .toString();
+
         return new DirectoryResponse(getJSONResponse(url, jsonInputString));
+    }
+
+    @PostMapping("/create")
+    public Response createFile(@RequestBody FileCreateRequest body) {
+        log.info(body.toString());
+
+        var maybeAgent = agentRepo.findById(body.getId());
+        if (maybeAgent.isEmpty()) {
+            return Response.bad("No such agent");
+        }
+
+        String ip = maybeAgent.get().getIp();
+        String port = maybeAgent.get().getPort();
+
+        String url = "http://" + ip + ":" + port + "/files" + "/create";
+        String jsonInput = new JSONObject()
+                .put("path", body.getPath())
+                .put("type", body.getType())
+                .put("content", body.getContent())
+                .toString();
+
+        // TODO maybe check response
+//        String response = getJSONResponse(url, jsonInput);
+
+        return Response.good();
     }
 }
 
