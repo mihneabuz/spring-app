@@ -55,11 +55,9 @@ public class FileController {
 
     @PostMapping("/dir")
     public Response showDirectory(@RequestBody DirectoryRequest body) {
-
         log.info(body.toString());
 
         var maybeAgent = agentRepo.findById(body.getId());
-
         if(maybeAgent.isEmpty()) {
             return Response.bad("No such agent");
         }
@@ -73,29 +71,6 @@ public class FileController {
                 .toString();
 
         return new DirectoryResponse(getJSONResponse(url, jsonInputString));
-    }
-
-    @GetMapping("/delete")
-    public Response deletePath(@RequestBody DeleteRequest body) {
-
-        log.info(body.toString());
-
-        var maybeAgent = agentRepo.findById(body.getId());
-
-        if(maybeAgent.isEmpty()) {
-            return Response.bad("No such agent");
-        }
-
-        String ip = maybeAgent.get().getIp();
-        String port = maybeAgent.get().getPort();
-
-        String url = "http://" + ip + ":" + port + "/files/delete";
-        String jsonInputString = "{\"path\": \"" + body.getPath() + "\"}";
-
-        System.out.println(getJSONResponse(url, jsonInputString));
-
-        return new DirectoryResponse(getJSONResponse(url, jsonInputString));
-
     }
 
     @PostMapping("/create")
@@ -117,8 +92,31 @@ public class FileController {
                 .put("content", body.getContent())
                 .toString();
 
+        String response = getJSONResponse(url, jsonInput);
         // TODO maybe check response
-//        String response = getJSONResponse(url, jsonInput);
+
+        return Response.good();
+    }
+
+    @PostMapping("/delete")
+    public Response deletePath(@RequestBody DeleteRequest body) {
+        log.info(body.toString());
+
+        var maybeAgent = agentRepo.findById(body.getId());
+        if(maybeAgent.isEmpty()) {
+            return Response.bad("No such agent");
+        }
+
+        String ip = maybeAgent.get().getIp();
+        String port = maybeAgent.get().getPort();
+
+        String url = "http://" + ip + ":" + port + "/files" + "/delete";
+        String jsonInputString = new JSONObject()
+                .put("path", body.getPath())
+                .toString();
+
+        String response = getJSONResponse(url, jsonInputString);
+        // TODO maybe check response
 
         return Response.good();
     }
