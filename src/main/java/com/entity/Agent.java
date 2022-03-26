@@ -19,16 +19,16 @@ public class Agent {
     public String port;
     public String root;
     public String owner;
-    public long heartBeat;
+    public long heartbeat;
 
-    private Agent(String id, String status, String ip, String port, String root, String owner, long heartBeat) {
+    private Agent(String id, String status, String ip, String port, String root, String owner, long heartbeat) {
         this.id = id;
         this.status = status;
         this.ip = ip;
         this.port = port;
         this.root = root;
         this.owner = owner;
-        this.heartBeat = heartBeat;
+        this.heartbeat = heartbeat;
     }
 
     public static Agent createNew(String status, String ip, String port, String root, String owner, long heartBeat) {

@@ -232,7 +232,7 @@ public class FileController {
         }
 
         if (body.hasSortBy()) {
-            jsonInput.put("sortBy", body.getSortBy());
+            jsonInput.put("orderBy", body.getOrderBy());
         }
 
         String jsonInputString = jsonInput.toString();

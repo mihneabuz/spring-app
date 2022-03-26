@@ -18,13 +18,13 @@ public class ShowProcsRequest {
     public int count;
 
     @JsonProperty(required = false)
-    public String sortBy;
+    public String orderBy;
 
     @JsonCreator
-    public ShowProcsRequest(String id, int count, String sortBy) {
+    public ShowProcsRequest(String id, int count, String orderBy) {
         this.id = id;
         this.count = count;
-        this.sortBy = sortBy;
+        this.orderBy = orderBy;
     }
 
     public boolean hasCount() {
@@ -32,6 +32,6 @@ public class ShowProcsRequest {
     }
 
     public boolean hasSortBy() {
-        return sortBy != null;
+        return orderBy != null;
     }
 }

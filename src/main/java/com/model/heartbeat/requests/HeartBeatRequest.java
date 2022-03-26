@@ -26,5 +26,4 @@ public class HeartBeatRequest {
         this.ip = ip;
         this.port = port;
     }
-
 }

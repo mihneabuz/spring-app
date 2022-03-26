@@ -9,7 +9,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.scheduling.annotation.Scheduled;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -83,8 +85,23 @@ public class AgentRepository {
 
     public void updateHeartBeat(String id, long newHeartBeat) {
         mongoTemplate.findAndModify(queryId(id),
-                new Update().set("status", newHeartBeat),
+                new Update().set("heartBeat", newHeartBeat),
                 Agent.class);
+    }
+
+    @Scheduled(fixedRate = 300000)
+    public void deleteInactiveAgents() {
+        // Delete agents that have not responded to heartbeat in 30 sec
+        var allAgents = getAllAgents();
+
+        long currentTime = System.currentTimeMillis();
+        for (Agent agent : allAgents) {
+            if (currentTime - agent.getHeartbeat() >= 3000000) {
+                mongoTemplate.findAndRemove(new Query(Criteria.where("heartbeat")
+                                .is(Long.toString(agent.getHeartbeat()))),
+                        Agent.class);
+            }
+        }
     }
 
     public List<Agent> getAllAgents() {
