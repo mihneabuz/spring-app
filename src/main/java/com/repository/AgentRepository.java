@@ -6,7 +6,9 @@ import config.MongoConfig;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
+import java.util.List;
 import java.util.Optional;
 
 public class AgentRepository {
@@ -33,13 +35,10 @@ public class AgentRepository {
         return new Query().addCriteria(Criteria.where("id").is(id));
     }
 
-    public void addAgent(final Agent agent) {
-        mongoTemplate.insert(agent);
-    }
-
-    public void deleteAgent(String id) {
-        mongoTemplate.findAndRemove(queryId(id),
-                Agent.class);
+    public static Query queryIpPort(String ip, String port) {
+        return new Query()
+                .addCriteria(Criteria.where("ip").is(ip))
+                .addCriteria(Criteria.where("port").is(port));
     }
 
     public Optional<Agent> findById(String id) {
@@ -50,6 +49,38 @@ public class AgentRepository {
         }
 
         return Optional.of(list.get(0));
+    }
+
+    public Optional<Agent> findByIpPort(String ip, String port) {
+        var list = mongoTemplate.find(
+                queryIpPort(ip, port),
+                Agent.class);
+
+        if (list.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(list.get(0));
+    }
+
+
+    public void addAgent(final Agent agent) {
+        mongoTemplate.insert(agent);
+    }
+
+    public void deleteAgent(String id) {
+        mongoTemplate.findAndRemove(queryId(id), Agent.class);
+    }
+
+
+    public void updateStatus(String id, String newStatus) {
+        mongoTemplate.findAndModify(queryId(id),
+                                    new Update().set("status", newStatus),
+                                    Agent.class);
+    }
+
+    public List<Agent> getAgents() {
+        return mongoTemplate.findAll(Agent.class);
     }
 
     public long count() {
