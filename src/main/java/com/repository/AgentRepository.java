@@ -1,6 +1,8 @@
 package com.repository;
 
+import com.auth.JwtOps;
 import com.entity.Agent;
+import com.entity.Identity;
 import com.mongodb.client.MongoClient;
 import config.MongoConfig;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -79,8 +81,25 @@ public class AgentRepository {
                                     Agent.class);
     }
 
-    public List<Agent> getAgents() {
+    public List<Agent> getAllAgents() {
         return mongoTemplate.findAll(Agent.class);
+    }
+
+    public List<Agent> getPublicAgents() {
+        return mongoTemplate.find(new Query()
+                            .addCriteria(Criteria.where("owner").is("Public")),
+                        Agent.class);
+    }
+
+    public List<Agent> getUserAgents(String auth) {
+        Identity identity = JwtOps.decodeOrThrow(auth);
+
+        return mongoTemplate.find(new Query()
+                    .addCriteria(new Criteria().orOperator(
+                            Criteria.where("owner").is("Public"),
+                            Criteria.where("owner").is(identity.getId())
+                    )),
+                    Agent.class);
     }
 
     public long count() {

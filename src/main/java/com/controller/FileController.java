@@ -1,5 +1,7 @@
 package com.controller;
 
+import com.auth.JwtOps;
+import com.entity.Identity;
 import com.model.Response;
 import com.model.file.requests.*;
 import com.model.file.responses.*;
@@ -45,19 +47,40 @@ public class FileController {
         }
     }
 
+    public boolean isValid(String auth, String owner) {
+        if (!owner.equals("Public")) {
+            if (auth != null) {
+                Identity identity = JwtOps.decodeOrThrow(auth);
+
+                return identity.getId().equals(owner);
+            } else {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     @GetMapping("/agents")
-    public Response showAgents() {
-        return new ShowAgentsResponse(agentRepo.getAgents());
+    public Response showAgents(@RequestHeader(value="Authorization", required = false) String auth) {
+        if (auth != null) {
+            return new ShowAgentsResponse(agentRepo.getUserAgents(auth));
+        }
+        return new ShowAgentsResponse(agentRepo.getPublicAgents());
     }
 
     @PostMapping("/dir")
-    public Response showDirectory(@RequestBody ShowDirectoryRequest body) {
+    public Response showDirectory(@RequestHeader(value="Authorization", required = false) String auth,
+                                  @RequestBody ShowDirectoryRequest body) {
         log.info(body.toString());
 
         var maybeAgent = agentRepo.findById(body.getId());
-        if(maybeAgent.isEmpty()) {
+        if (maybeAgent.isEmpty()) {
             return Response.bad("No such agent");
+        }
+
+        if (!isValid(auth, maybeAgent.get().getOwner())) {
+            return Response.bad("User not authorised!");
         }
 
         String ip = maybeAgent.get().getIp();
@@ -72,12 +95,17 @@ public class FileController {
     }
 
     @PostMapping("/create")
-    public Response createFile(@RequestBody CreateFileRequest body) {
+    public Response createFile(@RequestHeader(value="Authorization", required = false) String auth,
+                               @RequestBody CreateFileRequest body) {
         log.info(body.toString());
 
         var maybeAgent = agentRepo.findById(body.getId());
         if (maybeAgent.isEmpty()) {
             return Response.bad("No such agent");
+        }
+
+        if (!isValid(auth, maybeAgent.get().getOwner())) {
+            return Response.bad("User not authorised!");
         }
 
         String ip = maybeAgent.get().getIp();
@@ -93,19 +121,25 @@ public class FileController {
         }
         String jsonInputString = jsonInput.toString();
 
-        String response = getJSONResponse(url, jsonInputString);
-        // TODO maybe check response
-
+        JSONObject jsonResponse = new JSONObject(getJSONResponse(url, jsonInputString));
+        if (jsonResponse.get("success").toString().equals("false")) {
+            return Response.bad(jsonResponse.get("message").toString());
+        }
         return Response.good();
     }
 
     @PostMapping("/delete")
-    public Response deletePath(@RequestBody DeletePathRequest body) {
+    public Response deletePath(@RequestHeader(value="Authorization", required = false) String auth,
+                               @RequestBody DeletePathRequest body) {
         log.info(body.toString());
 
         var maybeAgent = agentRepo.findById(body.getId());
-        if(maybeAgent.isEmpty()) {
+        if (maybeAgent.isEmpty()) {
             return Response.bad("No such agent");
+        }
+
+        if (!isValid(auth, maybeAgent.get().getOwner())) {
+            return Response.bad("User not authorised!");
         }
 
         String ip = maybeAgent.get().getIp();
@@ -116,19 +150,25 @@ public class FileController {
                 .put("path", body.getPath())
                 .toString();
 
-        String response = getJSONResponse(url, jsonInputString);
-        // TODO maybe check response
-
+        JSONObject jsonResponse = new JSONObject(getJSONResponse(url, jsonInputString));
+        if (jsonResponse.get("success").toString().equals("false")) {
+            return Response.bad(jsonResponse.get("message").toString());
+        }
         return Response.good();
     }
 
     @PostMapping("/search")
-    public Response searchPath(@RequestBody SearchPathRequest body) {
+    public Response searchPath(@RequestHeader(value="Authorization", required = false) String auth,
+                               @RequestBody SearchPathRequest body) {
         log.info(body.toString());
 
         var maybeAgent = agentRepo.findById(body.getId());
-        if(maybeAgent.isEmpty()) {
+        if (maybeAgent.isEmpty()) {
             return Response.bad("No such agent");
+        }
+
+        if (!isValid(auth, maybeAgent.get().getOwner())) {
+            return Response.bad("User not authorised!");
         }
 
         String ip = maybeAgent.get().getIp();
@@ -143,12 +183,17 @@ public class FileController {
     }
 
     @PostMapping("/content")
-    public Response showContent(@RequestBody ShowContentRequest body) {
+    public Response showContent(@RequestHeader(value="Authorization", required = false) String auth,
+                                @RequestBody ShowContentRequest body) {
         log.info(body.toString());
 
         var maybeAgent = agentRepo.findById(body.getId());
-        if(maybeAgent.isEmpty()) {
+        if (maybeAgent.isEmpty()) {
             return Response.bad("No such agent");
+        }
+
+        if (!isValid(auth, maybeAgent.get().getOwner())) {
+            return Response.bad("User not authorised!");
         }
 
         String ip = maybeAgent.get().getIp();
@@ -163,12 +208,17 @@ public class FileController {
     }
 
     @PostMapping("/procs")
-    public Response showProcs(@RequestBody ShowProcsRequest body) {
+    public Response showProcs(@RequestHeader(value="Authorization", required = false) String auth,
+                              @RequestBody ShowProcsRequest body) {
         log.info(body.toString());
 
         var maybeAgent = agentRepo.findById(body.getId());
-        if(maybeAgent.isEmpty()) {
+        if (maybeAgent.isEmpty()) {
             return Response.bad("No such agent");
+        }
+
+        if (!isValid(auth, maybeAgent.get().getOwner())) {
+            return Response.bad("User not authorised!");
         }
 
         String ip = maybeAgent.get().getIp();
@@ -178,7 +228,7 @@ public class FileController {
         JSONObject jsonInput = new JSONObject()
                 .put("count", body.getCount());
 
-        if(body.hasSortBy()) {
+        if (body.hasSortBy()) {
             jsonInput.put("sortBy", body.getSortBy());
         }
 
@@ -188,12 +238,17 @@ public class FileController {
     }
 
     @PostMapping("/download")
-    public Response downloadFile(@RequestBody DownloadFileRequest body) {
+    public Response downloadFile(@RequestHeader(value="Authorization", required = false) String auth,
+                                 @RequestBody DownloadFileRequest body) {
         log.info(body.toString());
 
         var maybeAgent = agentRepo.findById(body.getId());
-        if(maybeAgent.isEmpty()) {
+        if (maybeAgent.isEmpty()) {
             return Response.bad("No such agent");
+        }
+
+        if (!isValid(auth, maybeAgent.get().getOwner())) {
+            return Response.bad("User not authorised!");
         }
 
         String ip = maybeAgent.get().getIp();
@@ -208,12 +263,17 @@ public class FileController {
     }
 
     @PostMapping("/upload")
-    public Response uploadFile(@RequestBody UploadFileRequest body) {
+    public Response uploadFile(@RequestHeader(value="Authorization", required = false) String auth,
+                               @RequestBody UploadFileRequest body) {
         log.info(body.toString());
 
         var maybeAgent = agentRepo.findById(body.getId());
-        if(maybeAgent.isEmpty()) {
+        if (maybeAgent.isEmpty()) {
             return Response.bad("No such agent");
+        }
+
+        if (!isValid(auth, maybeAgent.get().getOwner())) {
+            return Response.bad("User not authorised!");
         }
 
         String ip = maybeAgent.get().getIp();
@@ -225,9 +285,10 @@ public class FileController {
                 .put("base64file", body.getBase64file())
                 .toString();
 
-        String response = getJSONResponse(url, jsonInputString);
-        // TODO maybe check response
-
+        JSONObject jsonResponse = new JSONObject(getJSONResponse(url, jsonInputString));
+        if (jsonResponse.get("success").toString().equals("false")) {
+            return Response.bad(jsonResponse.get("message").toString());
+        }
         return Response.good();
     }
 }

@@ -8,10 +8,10 @@ import lombok.ToString;
 @Getter @Setter @ToString
 public class ShowContentResponse extends Response {
 
-    private String folderContent;
+    private String content;
 
-    public ShowContentResponse(String folderContent) {
+    public ShowContentResponse(String content) {
         super(true, "ok");
-        this.folderContent = folderContent;
+        this.content = content;
     }
 }

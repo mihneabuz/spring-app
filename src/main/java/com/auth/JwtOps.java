@@ -32,7 +32,7 @@ public class JwtOps {
             "level", user.getLevel());
 
         String token = JWT.create()
-            .withExpiresAt(afterDays(1))
+            .withExpiresAt(afterDays(3))
             .withPayload(payload)
             .sign(algorithm);
 

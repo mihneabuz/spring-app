@@ -20,10 +20,18 @@ public class ConnectAgentRequest {
     @JsonProperty(required = true)
     public String root;
 
+    @JsonProperty(required = false)
+    public String token;
+
     @JsonCreator
-    public ConnectAgentRequest(String ip, String port, String root) {
+    public ConnectAgentRequest(String ip, String port, String root, String token) {
         this.ip = ip;
         this.port = port;
         this.root = root;
+        this.token = token;
+    }
+
+    public boolean hasToken() {
+        return token != null;
     }
 }

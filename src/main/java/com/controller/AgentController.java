@@ -1,6 +1,8 @@
 package com.controller;
 
+import com.auth.JwtOps;
 import com.entity.Agent;
+import com.entity.Identity;
 import com.model.Response;
 import com.model.agent.requests.ConnectAgentRequest;
 import com.model.agent.requests.DisconnectAgentRequest;
@@ -24,7 +26,18 @@ public class AgentController {
         var maybeAgent = agentRepo.findByIpPort(body.getIp(), body.getPort());
 
         if (maybeAgent.isEmpty()) {
-            Agent agent = Agent.createNew("connected", body.getIp(), body.getPort(), body.getRoot());
+            Agent agent;
+            if (body.hasToken()) {
+                Identity identity = JwtOps.decodeOrThrow(body.getToken());
+
+                agent = Agent.createNew("connected",
+                                        body.getIp(), body.getPort(), body.getRoot(),
+                                        identity.getId(), System.currentTimeMillis());
+            } else {
+                agent = Agent.createNew("connected",
+                                        body.getIp(), body.getPort(), body.getRoot(),
+                                        "Public", System.currentTimeMillis());
+            }
             agentRepo.addAgent(agent);
         } else {
             agentRepo.updateStatus(maybeAgent.get().getId(), "connected");
