@@ -222,7 +222,7 @@ public class FileController {
         String url = "http://" + ip + ":" + port + "/files" + "/upload";
         String jsonInputString = new JSONObject()
                 .put("path", body.getPath())
-                .put("base64file", body.getBase64File())
+                .put("base64file", body.getBase64file())
                 .toString();
 
         String response = getJSONResponse(url, jsonInputString);

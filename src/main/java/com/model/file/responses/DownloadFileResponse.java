@@ -8,10 +8,10 @@ import lombok.ToString;
 @Getter @Setter @ToString
 public class DownloadFileResponse extends Response {
 
-    private String base64File;
+    private String base64file;
 
-    public DownloadFileResponse(String base64File) {
+    public DownloadFileResponse(String base64file) {
         super(true, "ok");
-        this.base64File = base64File;
+        this.base64file = base64file;
     }
 }

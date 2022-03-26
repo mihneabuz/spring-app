@@ -17,13 +17,13 @@ public class UploadFileRequest {
     public String path;
 
     @JsonProperty(required = true)
-    public String base64File;
+    public String base64file;
 
     @JsonCreator
-    public UploadFileRequest(String id, String path, String base64File) {
+    public UploadFileRequest(String id, String path, String base64file) {
         this.id = id;
         this.path = path;
-        this.base64File = base64File;
+        this.base64file = base64file;
     }
 
 }
