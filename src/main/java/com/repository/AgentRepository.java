@@ -81,6 +81,12 @@ public class AgentRepository {
                                     Agent.class);
     }
 
+    public void updateHeartBeat(String id, long newHeartBeat) {
+        mongoTemplate.findAndModify(queryId(id),
+                new Update().set("status", newHeartBeat),
+                Agent.class);
+    }
+
     public List<Agent> getAllAgents() {
         return mongoTemplate.findAll(Agent.class);
     }
