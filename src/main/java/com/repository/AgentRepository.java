@@ -5,10 +5,12 @@ import com.entity.Agent;
 import com.entity.Identity;
 import com.mongodb.client.MongoClient;
 import config.MongoConfig;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.ArrayList;
@@ -89,7 +91,6 @@ public class AgentRepository {
                 Agent.class);
     }
 
-    @Scheduled(fixedDelay = 300000)
     public void deleteInactiveAgents() {
         // Delete agents that have not responded to heartbeat in 30 sec
         var allAgents = getAllAgents();
