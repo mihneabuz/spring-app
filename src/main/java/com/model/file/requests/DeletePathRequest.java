@@ -1,4 +1,4 @@
-package com.model.agent;
+package com.model.file.requests;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FileCreateRequest {
+public class DeletePathRequest {
 
     @JsonProperty(required = true)
     public String id;
@@ -16,21 +16,9 @@ public class FileCreateRequest {
     @JsonProperty(required = true)
     public String path;
 
-    @JsonProperty(required = true)
-    public String type;
-
-    @JsonProperty(required = false)
-    public String content;
-
     @JsonCreator
-    public FileCreateRequest(String id, String path, String type, String content) {
+    public DeletePathRequest(String id, String path) {
         this.id = id;
         this.path = path;
-        this.type = type;
-        this.content = content;
-    }
-
-    public boolean hasContent() {
-        return content != null;
     }
 }

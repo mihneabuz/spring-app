@@ -1,4 +1,4 @@
-package com.model.agent;
+package com.model.file.responses;
 
 import com.model.Response;
 import lombok.Getter;
@@ -6,11 +6,11 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Getter @Setter @ToString
-public class DirectoryResponse extends Response {
+public class ShowDirectoryResponse extends Response {
 
     private String body;
 
-    public DirectoryResponse(String body) {
+    public ShowDirectoryResponse(String body) {
         super(true, "ok");
         this.body = body;
     }

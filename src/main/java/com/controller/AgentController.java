@@ -2,10 +2,9 @@ package com.controller;
 
 import com.entity.Agent;
 import com.model.Response;
-import com.model.agent.ConnectAgentRequest;
-import com.model.agent.DisconnectAgentRequest;
+import com.model.agent.requests.ConnectAgentRequest;
+import com.model.agent.requests.DisconnectAgentRequest;
 import com.repository.AgentRepository;
-import com.repository.ProductRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;

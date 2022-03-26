@@ -1,4 +1,4 @@
-package com.model.agent;
+package com.model.agent.requests;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

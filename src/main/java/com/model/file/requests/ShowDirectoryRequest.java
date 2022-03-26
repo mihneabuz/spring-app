@@ -1,4 +1,4 @@
-package com.model.agent;
+package com.model.file.requests;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DeleteRequest {
+public class ShowDirectoryRequest {
 
     @JsonProperty(required = true)
     public String id;
@@ -17,7 +17,7 @@ public class DeleteRequest {
     public String path;
 
     @JsonCreator
-    public DeleteRequest(String id, String path) {
+    public ShowDirectoryRequest(String id, String path) {
         this.id = id;
         this.path = path;
     }

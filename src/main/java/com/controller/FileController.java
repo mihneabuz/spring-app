@@ -1,9 +1,8 @@
 package com.controller;
 
-import com.model.agent.*;
 import com.model.Response;
-import com.model.agent.FileCreateRequest;
-import com.model.agent.ProcessRequest;
+import com.model.file.requests.*;
+import com.model.file.responses.*;
 import com.repository.AgentRepository;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -46,13 +45,14 @@ public class FileController {
         }
     }
 
+
     @GetMapping("/agents")
     public Response showAgents() {
-        return new AgentsResponse(agentRepo.getAgents());
+        return new ShowAgentsResponse(agentRepo.getAgents());
     }
 
     @PostMapping("/dir")
-    public Response showDirectory(@RequestBody DirectoryRequest body) {
+    public Response showDirectory(@RequestBody ShowDirectoryRequest body) {
         log.info(body.toString());
 
         var maybeAgent = agentRepo.findById(body.getId());
@@ -68,11 +68,11 @@ public class FileController {
                 .put("path", body.getPath())
                 .toString();
 
-        return new DirectoryResponse(getJSONResponse(url, jsonInputString));
+        return new ShowDirectoryResponse(getJSONResponse(url, jsonInputString));
     }
 
     @PostMapping("/create")
-    public Response createFile(@RequestBody FileCreateRequest body) {
+    public Response createFile(@RequestBody CreateFileRequest body) {
         log.info(body.toString());
 
         var maybeAgent = agentRepo.findById(body.getId());
@@ -100,7 +100,7 @@ public class FileController {
     }
 
     @PostMapping("/delete")
-    public Response deletePath(@RequestBody DeleteRequest body) {
+    public Response deletePath(@RequestBody DeletePathRequest body) {
         log.info(body.toString());
 
         var maybeAgent = agentRepo.findById(body.getId());
@@ -122,60 +122,8 @@ public class FileController {
         return Response.good();
     }
 
-    @PostMapping("/content")
-    public Response deletePath(@RequestBody ContentRequest body) {
-        log.info(body.toString());
-
-        var maybeAgent = agentRepo.findById(body.getId());
-        if(maybeAgent.isEmpty()) {
-            return Response.bad("No such agent");
-        }
-
-        String ip = maybeAgent.get().getIp();
-        String port = maybeAgent.get().getPort();
-
-        String url = "http://" + ip + ":" + port + "/files" + "/content";
-        String jsonInputString = new JSONObject()
-                .put("path", body.getPath())
-                .toString();
-
-        String response = getJSONResponse(url, jsonInputString);
-        // TODO maybe check response
-
-        return Response.good();
-    }
-
-    @PostMapping("/procs")
-    public Response deletePath(@RequestBody ProcessRequest body) {
-        log.info(body.toString());
-
-        var maybeAgent = agentRepo.findById(body.getId());
-        if(maybeAgent.isEmpty()) {
-            return Response.bad("No such agent");
-        }
-
-        String ip = maybeAgent.get().getIp();
-        String port = maybeAgent.get().getPort();
-
-        String url = "http://" + ip + ":" + port + "/files" + "/procs";
-
-        JSONObject jsonInput = new JSONObject()
-                .put("count", body.getCount());
-
-        if(body.hasSortBy()) {
-            jsonInput.put("sortBy", body.getSortBy()).toString();
-        }
-
-        String jsonInputString = jsonInput.toString();
-
-        String response = getJSONResponse(url, jsonInputString);
-        // TODO maybe check response
-
-        return Response.good();
-    }
-
     @PostMapping("/search")
-    public Response searchPath(@RequestBody SearchRequest body) {
+    public Response searchPath(@RequestBody SearchPathRequest body) {
         log.info(body.toString());
 
         var maybeAgent = agentRepo.findById(body.getId());
@@ -193,7 +141,56 @@ public class FileController {
 
         String response = getJSONResponse(url, jsonInputString);
 
-        return new SearchResponse(response);
+        return new SearchPathResponse(response);
+    }
+
+    @PostMapping("/content")
+    public Response showContent(@RequestBody ShowContentRequest body) {
+        log.info(body.toString());
+
+        var maybeAgent = agentRepo.findById(body.getId());
+        if(maybeAgent.isEmpty()) {
+            return Response.bad("No such agent");
+        }
+
+        String ip = maybeAgent.get().getIp();
+        String port = maybeAgent.get().getPort();
+
+        String url = "http://" + ip + ":" + port + "/files" + "/content";
+        String jsonInputString = new JSONObject()
+                .put("path", body.getPath())
+                .toString();
+
+        String response = getJSONResponse(url, jsonInputString);
+
+        return new ShowContentResponse(response);
+    }
+
+    @PostMapping("/procs")
+    public Response showProcs(@RequestBody ShowProcsRequest body) {
+        log.info(body.toString());
+
+        var maybeAgent = agentRepo.findById(body.getId());
+        if(maybeAgent.isEmpty()) {
+            return Response.bad("No such agent");
+        }
+
+        String ip = maybeAgent.get().getIp();
+        String port = maybeAgent.get().getPort();
+
+        String url = "http://" + ip + ":" + port + "/files" + "/procs";
+        JSONObject jsonInput = new JSONObject()
+                .put("count", body.getCount());
+
+        if(body.hasSortBy()) {
+            jsonInput.put("sortBy", body.getSortBy());
+        }
+
+        String jsonInputString = jsonInput.toString();
+
+        String response = getJSONResponse(url, jsonInputString);
+
+        return new ShowProcsResponse(response);
     }
 }
 

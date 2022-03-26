@@ -1,4 +1,4 @@
-package com.model.agent;
+package com.model.file.requests;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -8,17 +8,25 @@ import lombok.Setter;
 
 @Getter @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ContentRequest {
+public class ShowProcsRequest {
 
     @JsonProperty(required = true)
     public String id;
 
     @JsonProperty(required = true)
-    public String path;
+    public int count;
+
+    @JsonProperty(required = false)
+    public String sortBy;
+
+    public boolean hasSortBy() {
+        return (sortBy != null);
+    }
 
     @JsonCreator
-    public ContentRequest(String id, String path) {
+    public ShowProcsRequest(String id, int count, String sortBy) {
         this.id = id;
-        this.path = path;
+        this.count = count;
+        this.sortBy = sortBy;
     }
 }

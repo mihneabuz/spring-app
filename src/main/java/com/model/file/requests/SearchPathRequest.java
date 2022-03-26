@@ -1,4 +1,4 @@
-package com.model.agent;
+package com.model.file.requests;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SearchRequest {
+public class SearchPathRequest {
 
     @JsonProperty(required = true)
     public String id;
@@ -17,7 +17,7 @@ public class SearchRequest {
     public String pattern;
 
     @JsonCreator
-    public SearchRequest(String id, String pattern) {
+    public SearchPathRequest(String id, String pattern) {
         this.id = id;
         this.pattern = pattern;
     }
