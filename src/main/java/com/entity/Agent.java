@@ -18,16 +18,20 @@ public class Agent {
     public String ip;
     public String port;
     public String root;
+    public String owner;
+    public long heartBeat;
 
-    private Agent(String id, String status, String ip, String port, String root) {
+    private Agent(String id, String status, String ip, String port, String root, String owner, long heartBeat) {
         this.id = id;
         this.status = status;
         this.ip = ip;
         this.port = port;
         this.root = root;
+        this.owner = owner;
+        this.heartBeat = heartBeat;
     }
 
-    public static Agent createNew(String status, String ip, String port, String root) {
-        return new Agent(UUID.randomUUID().toString(), status, ip, port, root);
+    public static Agent createNew(String status, String ip, String port, String root, String owner, long heartBeat) {
+        return new Agent(UUID.randomUUID().toString(), status, ip, port, root, owner, heartBeat);
     }
 }
