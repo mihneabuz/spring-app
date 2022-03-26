@@ -6,6 +6,7 @@ import com.entity.Identity;
 import com.model.Response;
 import com.model.agent.requests.ConnectAgentRequest;
 import com.model.agent.requests.DisconnectAgentRequest;
+import com.model.heartbeat.requests.HeartBeatRequest;
 import com.repository.AgentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +59,22 @@ public class AgentController {
 
 //        agentRepo.updateStatus(maybeAgent.get().getId(), "disconnected");
         agentRepo.deleteAgent(maybeAgent.get().getId());
+        return Response.good();
+    }
+
+    @PostMapping("/heartbeat")
+    public Response heartBeat(@RequestBody HeartBeatRequest body) {
+        log.info(body.toString());
+
+        var maybeAgent = agentRepo.findByIpPort(body.getIp(), body.getPort());
+
+        if (maybeAgent.isEmpty()) {
+            return Response.bad("No such agent");
+        }
+
+        long newHeartBeat = System.currentTimeMillis();
+        agentRepo.updateHeartBeat(body.getId(), newHeartBeat);
+
         return Response.good();
     }
 
