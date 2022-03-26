@@ -14,7 +14,7 @@ public class ShowProcsRequest {
     @JsonProperty(required = true)
     public String id;
 
-    @JsonProperty(required = true)
+    @JsonProperty(required = false)
     public int count;
 
     @JsonProperty(required = false)
@@ -27,7 +27,11 @@ public class ShowProcsRequest {
         this.sortBy = sortBy;
     }
 
+    public boolean hasCount() {
+        return count != 0;
+    }
+
     public boolean hasSortBy() {
-        return (sortBy != null);
+        return sortBy != null;
     }
 }

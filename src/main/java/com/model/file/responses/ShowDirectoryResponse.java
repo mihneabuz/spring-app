@@ -8,10 +8,10 @@ import lombok.ToString;
 @Getter @Setter @ToString
 public class ShowDirectoryResponse extends Response {
 
-    private String body;
+    private String foundFiles;
 
-    public ShowDirectoryResponse(String body) {
+    public ShowDirectoryResponse(String foundFiles) {
         super(true, "ok");
-        this.body = body;
+        this.foundFiles = foundFiles;
     }
 }

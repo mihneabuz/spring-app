@@ -47,7 +47,7 @@ public class FileController {
         }
     }
 
-    public boolean isValid(String auth, String owner) {
+    private boolean isValid(String auth, String owner) {
         if (!owner.equals("Public")) {
             if (auth != null) {
                 Identity identity = JwtOps.decodeOrThrow(auth);
@@ -224,9 +224,12 @@ public class FileController {
         String ip = maybeAgent.get().getIp();
         String port = maybeAgent.get().getPort();
 
-        String url = "http://" + ip + ":" + port + "/files" + "/procs";
-        JSONObject jsonInput = new JSONObject()
-                .put("count", body.getCount());
+        String url = "http://" + ip + ":" + port + "/procs";
+        JSONObject jsonInput = new JSONObject();
+
+        if (body.hasCount()) {
+            jsonInput.put("count", body.getCount());
+        }
 
         if (body.hasSortBy()) {
             jsonInput.put("sortBy", body.getSortBy());
