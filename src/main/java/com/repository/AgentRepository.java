@@ -89,7 +89,7 @@ public class AgentRepository {
                 Agent.class);
     }
 
-    @Scheduled(fixedRate = 300000)
+    @Scheduled(fixedDelay = 300000)
     public void deleteInactiveAgents() {
         // Delete agents that have not responded to heartbeat in 30 sec
         var allAgents = getAllAgents();

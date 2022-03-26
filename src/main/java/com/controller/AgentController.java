@@ -32,11 +32,11 @@ public class AgentController {
                 Identity identity = JwtOps.decodeOrThrow(body.getToken());
 
                 agent = Agent.createNew("connected",
-                                        body.getIp(), body.getPort(), body.getRoot(),
+                                        body.getName(), body.getIp(), body.getPort(), body.getRoot(),
                                         identity.getId(), System.currentTimeMillis());
             } else {
                 agent = Agent.createNew("connected",
-                                        body.getIp(), body.getPort(), body.getRoot(),
+                                        body.getName(), body.getIp(), body.getPort(), body.getRoot(),
                                         "Public", System.currentTimeMillis());
             }
             agentRepo.addAgent(agent);
@@ -63,7 +63,7 @@ public class AgentController {
     }
 
     @PostMapping("/heartbeat")
-    public Response heartBeat(@RequestBody HeartBeatRequest body) {
+    public Response heartbeat(@RequestBody HeartBeatRequest body) {
         log.info(body.toString());
 
         var maybeAgent = agentRepo.findByIpPort(body.getIp(), body.getPort());

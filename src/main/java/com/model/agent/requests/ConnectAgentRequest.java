@@ -12,6 +12,9 @@ import lombok.ToString;
 public class ConnectAgentRequest {
 
     @JsonProperty(required = true)
+    public String name;
+
+    @JsonProperty(required = true)
     public String ip;
 
     @JsonProperty(required = true)
@@ -24,7 +27,8 @@ public class ConnectAgentRequest {
     public String token;
 
     @JsonCreator
-    public ConnectAgentRequest(String ip, String port, String root, String token) {
+    public ConnectAgentRequest(String name, String ip, String port, String root, String token) {
+        this.name = name;
         this.ip = ip;
         this.port = port;
         this.root = root;
