@@ -76,7 +76,6 @@ public class AgentController {
                                         "Public", System.currentTimeMillis());
             }
 //            sendPublicKey(agent.getIp(), agent.getPort());
-            // TODO: obs nu se fol raspunsul de la agent (daca e ok) - vedem
             agentRepo.addAgent(agent);
         } else {
             agentRepo.updateStatus(maybeAgent.get().getId(), "connected");
