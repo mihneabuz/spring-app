@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableScheduling
 public class ScheduledTasks {
 
-    @Scheduled(fixedRate = 300000) // 5 min heartbeat
+    @Scheduled(fixedRate = 300000) // heartbeat every 5 min
     public static void heartbeat() {
         AgentRepository agentRepo = AgentRepository.get();
 

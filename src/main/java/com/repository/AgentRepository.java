@@ -87,7 +87,7 @@ public class AgentRepository {
 
     public void updateHeartBeat(String id, long newHeartBeat) {
         mongoTemplate.findAndModify(queryId(id),
-                new Update().set("heartBeat", newHeartBeat),
+                new Update().set("heartbeat", newHeartBeat),
                 Agent.class);
     }
 

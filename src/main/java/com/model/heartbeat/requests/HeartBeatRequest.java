@@ -12,17 +12,13 @@ import lombok.ToString;
 public class HeartBeatRequest {
 
     @JsonProperty(required = true)
-    public String id;
-
-    @JsonProperty(required = true)
     public String ip;
 
     @JsonProperty(required = true)
     public String port;
 
     @JsonCreator
-    public HeartBeatRequest(String id, String ip, String port) {
-        this.id = id;
+    public HeartBeatRequest(String ip, String port) {
         this.ip = ip;
         this.port = port;
     }
