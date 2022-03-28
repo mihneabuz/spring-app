@@ -1,6 +1,7 @@
 package com.controller;
 
 import com.model.*;
+import com.model.user.*;
 import com.repository.UserRepository;
 import com.auth.JwtOps;
 import com.auth.exceptions.UnauthorizedException;
@@ -48,7 +49,7 @@ class UserController {
         log.info(body.toString());
 
         var maybeUser = userRepo.findByUsername(body.getUsername());
-        if (!maybeUser.isPresent())
+        if (maybeUser.isEmpty())
             return Response.bad("Wrong username!");
 
         var user = maybeUser.get();
@@ -74,7 +75,7 @@ class UserController {
         Identity identity = JwtOps.decodeOrThrow(auth);
         var maybeUser = userRepo.findByID(identity.getId());
 
-        if (!maybeUser.isPresent()) {
+        if (maybeUser.isEmpty()) {
             // This is very bad
             log.error("USER ID NOT FOUND IN DB!");
             throw new UnauthorizedException("User id not found");
@@ -92,7 +93,7 @@ class UserController {
     }
 
     @PostMapping("/updatePassword")
-    public Response udpatePassword(@RequestHeader("Authorization") String auth,
+    public Response updatePassword(@RequestHeader("Authorization") String auth,
                                    @RequestBody UpdatePasswordRequest body) {
 
         log.info(body.toString());
@@ -100,7 +101,7 @@ class UserController {
         Identity identity = JwtOps.decodeOrThrow(auth);
         var maybeUser = userRepo.findByID(identity.getId());
 
-        if (!maybeUser.isPresent()) {
+        if (maybeUser.isEmpty()) {
             // This is very bad
             log.error("USER ID NOT FOUND IN DB!");
             throw new UnauthorizedException("User id doesn't exist");
@@ -108,22 +109,25 @@ class UserController {
 
         var user = maybeUser.get();
         if (!user.getPassword().equals(body.getOldPassword()))
-            return Response.bad("Wrong password!"); 
+            return Response.bad("Wrong password!");
 
-        userRepo.updatePassword(identity.getId(), body.getNewPassword()); 
+        if (body.getNewPassword().equals(body.getOldPassword()))
+            return Response.bad("The new password can't be the same as the old password!");
+
+        userRepo.updatePassword(identity.getId(), body.getNewPassword());
         return Response.good();
     }
 
     @DeleteMapping("/deleteUser")
     public Response deleteUser(@RequestHeader("Authorization") String auth,
                                @RequestBody DeleteUserRequest body) {
-        
+
         log.info(body.toString());
 
         Identity identity = JwtOps.decodeOrThrow(auth);
         var maybeUser = userRepo.findByID(identity.getId());
 
-        if (!maybeUser.isPresent()) {
+        if (maybeUser.isEmpty()) {
             // This is very bad
             log.error("USER ID NOT FOUND IN DB!");
             throw new UnauthorizedException("User id doesn't exist");
@@ -131,9 +135,9 @@ class UserController {
 
         var user = maybeUser.get();
         if (!user.getPassword().equals(body.getPassword()))
-            return Response.bad("Wrong password!"); 
+            return Response.bad("Wrong password!");
 
-        userRepo.deleteUser(identity.getId()); 
+        userRepo.deleteUser(identity.getId());
         return Response.good();
     }
 

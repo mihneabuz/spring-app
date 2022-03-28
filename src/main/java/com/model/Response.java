@@ -1,29 +1,17 @@
 package com.model;
 
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter @ToString
 public class Response {
 
-    private boolean success;
-    private String message;
+    private final boolean success;
+    private final String message;
 
-    public Response(boolean success, String message) {
+    protected Response(boolean success, String message) {
         this.success = success;
         this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    @Override
-    public String toString() {
-        return "RegisterResponse{" +
-            "success:" + success + "," +
-            "message:\'" + message + "\'" +
-            "}";
     }
 
     public static Response good() {

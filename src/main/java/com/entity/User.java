@@ -2,9 +2,12 @@ package com.entity;
 
 import java.util.UUID;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+@Getter @Setter
 @Document("users")
 public class User {
 
@@ -16,51 +19,11 @@ public class User {
     public String password;
     public int level;
 
-    public User(String id, String email, String username, String password, int level) {
+    private User(String id, String email, String username, String password, int level) {
         this.id = id;
         this.email = email;
         this.username = username;
         this.password = password;
-        this.level = level;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    } 
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setLevel(int level) {
         this.level = level;
     }
 

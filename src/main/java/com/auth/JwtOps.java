@@ -18,11 +18,11 @@ import org.slf4j.LoggerFactory;
 public class JwtOps {
 
     private static final Logger log = LoggerFactory.getLogger(JwtOps.class);
-    private static Algorithm algorithm = Algorithm.HMAC256("secret");
-    private static long milliesInADay = 1000 * 60 * 60 * 24;
+    private static final Algorithm algorithm = Algorithm.HMAC256("secret");
+    private static final long millisInADay = 1000 * 60 * 60 * 24;
 
     private static Date afterDays(int days) {
-        return new Date(System.currentTimeMillis() + (days * milliesInADay));
+        return new Date(System.currentTimeMillis() + (days * millisInADay));
     }
 
     public static String createToken(User user) {
@@ -32,7 +32,7 @@ public class JwtOps {
             "level", user.getLevel());
 
         String token = JWT.create()
-            .withExpiresAt(afterDays(1))
+            .withExpiresAt(afterDays(3))
             .withPayload(payload)
             .sign(algorithm);
 
